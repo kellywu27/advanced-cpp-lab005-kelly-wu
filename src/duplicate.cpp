@@ -1,58 +1,28 @@
-#include "frequency.h"
+#include "duplicate.h"
 
-#include <stdexcept>
-#include <unordered_map>
+#include <unordered_set>
 
 namespace algorithm_lab {
 
-int mostFrequentNaive(const std::vector<int>& values) {
-    if (values.empty()) {
-        throw std::invalid_argument("values must not be empty");
-    }
-
-    int best_value = values.front();
-    int best_count = 0;
-
+bool hasDuplicateNaive(const std::vector<int>& values) {
     for (std::size_t i = 0; i < values.size(); ++i) {
-        int current = values[i];
-        int count = 0;
-        for (std::size_t j = 0; j < values.size(); ++j) {
-            if (values[j] == current) {
-                ++count;
+        for (std::size_t j = i + 1; j < values.size(); ++j) {
+            if (values[i] == values[j]) {
+                return true;
             }
         }
-
-        if (count > best_count || (count == best_count && current < best_value)) {
-            best_count = count;
-            best_value = current;
-        }
     }
-
-    return best_value;
+    return false;
 }
 
-int mostFrequentEfficient(const std::vector<int>& values) {
-    if (values.empty()) {
-        throw std::invalid_argument("values must not be empty");
-    }
-
-    std::unordered_map<int, int> counts;
-    counts.reserve(values.size());
+bool hasDuplicateEfficient(const std::vector<int>& values) {
+    std::unordered_set<int> seen;
     for (int value : values) {
-        ++counts[value];
-    }
-
-    int best_value = values.front();
-    int best_count = 0;
-    for (const auto& entry : counts) {
-        if (entry.second > best_count ||
-            (entry.second == best_count && entry.first < best_value)) {
-            best_count = entry.second;
-            best_value = entry.first;
+        if (!seen.insert(value).second) {
+            return true;
         }
     }
-
-    return best_value;
+    return false;
 }
 
 }

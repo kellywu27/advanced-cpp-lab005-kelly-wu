@@ -32,8 +32,27 @@ int mostFrequentNaive(const std::vector<int>& values) {
 }
 
 int mostFrequentEfficient(const std::vector<int>& values) {
+    if (values.empty()) {
+        throw std::invalid_argument("values must not be empty");
+    }
 
-    return false;
+    std::unordered_map<int, int> counts;
+    counts.reserve(values.size());
+    for (int value : values) {
+        ++counts[value];
+    }
+
+    int best_value = values.front();
+    int best_count = 0;
+    for (const auto& entry : counts) {
+        if (entry.second > best_count ||
+            (entry.second == best_count && entry.first < best_value)) {
+            best_count = entry.second;
+            best_value = entry.first;
+        }
+    }
+
+    return best_value;
 }
 
 }
